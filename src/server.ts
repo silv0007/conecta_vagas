@@ -7,6 +7,7 @@ import { studentRoutes } from "./modules/students/student.routes";
 import { jobRoutes } from "./modules/jobs/job.routes";
 import { companyRoutes } from "./modules/companies/company.routes";
 import { applicationRoutes } from "./modules/applications/application.routes";
+import { AppError } from "./shared/errors/app.error";
 
 const app = Fastify({ logger: true });
 
@@ -20,6 +21,16 @@ app.register(studentRoutes, { prefix: "/students" });
 app.register(jobRoutes, { prefix: "/jobs" });
 app.register(companyRoutes, { prefix: "/companies" });
 app.register(applicationRoutes, { prefix: "/applications" });
+
+app.setErrorHandler((error, request, reply) => {
+  if (error instanceof AppError) {
+    return reply.status(error.statusCode).send({ message: error.message });
+  }
+
+  app.log.error(error);
+
+  return reply.status(500).send({ message: "Erro interno do servidor." });
+});
 
 app.get("/health", async () => {
   return { status: "ok" };
