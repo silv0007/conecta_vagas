@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "dev": "tsx watch src/server.ts",
-  "build": "tsc",
-  "test": "vitest"
-},
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "test": "vitest run"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/silv0007/conecta_vagas.git"
@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/silv0007/conecta_vagas/issues"
   },
-  "homepage": "https://github.com/silv0007/conecta_vagas#readme"
+  "homepage": "https://github.com/silv0007/conecta_vagas#readme",
+  "devDependencies": {
+    "vitest": "^4.1.2"
+  }
 }
