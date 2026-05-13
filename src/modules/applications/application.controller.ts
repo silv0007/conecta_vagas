@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { ApplicationService } from "./application.service";
 import { UpdateApplicationStatusDTO } from "./application.dto";
 import { StudentRepository } from "../students/student.repository";
+import { AppError } from "../../shared/errors/app.error";
 
 const applicationService = new ApplicationService();
 const studentRepository = new StudentRepository();
@@ -14,7 +15,7 @@ export class ApplicationController {
     const student = await studentRepository.findByUserId(userId);
 
     if (!student) {
-      throw new Error("Perfil de aluno não encontrado.");
+      throw new AppError("Perfil de aluno não encontrado.", 404);
     }
 
     const application = await applicationService.create({
@@ -39,7 +40,7 @@ export class ApplicationController {
     const student = await studentRepository.findByUserId(userId);
 
     if (!student) {
-      throw new Error("Perfil de aluno não encontrado.");
+      throw new AppError("Perfil de aluno não encontrado.", 404);
     }
 
     const applications = await applicationService.findByStudentId(student.id);

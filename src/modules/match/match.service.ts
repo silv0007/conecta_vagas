@@ -38,9 +38,6 @@ export class MatchService {
 
     if (!application) return null;
 
-    console.log("Student skills:", application.student.skills);
-    console.log("Job skills:", application.job.skills);
-
     const score = this.calculateScore(
       application.student.skills,
       application.student.course,
@@ -49,8 +46,6 @@ export class MatchService {
       application.job.course,
       application.job.availability
     );
-
-    console.log("Score calculado:", score);
 
     return prisma.application.update({
       where: { id: applicationId },

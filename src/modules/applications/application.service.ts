@@ -2,9 +2,18 @@ import { AppError } from "../../shared/errors/app.error";
 import { ApplicationRepository } from "./application.repository";
 import { CreateApplicationDTO, UpdateApplicationStatusDTO } from "./application.dto";
 import { MatchService } from "../match/match.service";
+import { ApplicationStatus } from "../../generated/prisma";
 
 const applicationRepository = new ApplicationRepository();
 const matchService = new MatchService();
+
+const validTransitions: Record<ApplicationStatus, ApplicationStatus[]> = {
+  SENT: ["UNDER_REVIEW", "REJECTED"],
+  UNDER_REVIEW: ["INTERVIEW", "REJECTED"],
+  INTERVIEW: ["APPROVED", "REJECTED"],
+  APPROVED: [],
+  REJECTED: [],
+};
 
 export class ApplicationService {
   async create(data: CreateApplicationDTO) {
@@ -37,6 +46,14 @@ export class ApplicationService {
 
     if (!application) {
       throw new AppError("Candidatura não encontrada.", 404);
+    }
+
+    const allowed = validTransitions[application.status];
+    if (!allowed.includes(data.status)) {
+      throw new AppError(
+        `Transição de "${application.status}" para "${data.status}" não é permitida.`,
+        422
+      );
     }
 
     return applicationRepository.updateStatus(id, data);
